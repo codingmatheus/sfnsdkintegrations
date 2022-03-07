@@ -1,0 +1,173 @@
+{
+    "Comment": "Demo workflow used to contrast the differences between invoking an AWS Lambda function via Optimizied and AWS SDK integration",
+    "StartAt": "OI or SDK?",
+    "States": {
+        "OI or SDK?": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "And": [
+                      {
+                        "Variable": "$.type",
+                        "IsPresent": true
+                      },
+                      {
+                        "Variable": "$.type",
+                        "StringMatches": "sdk"
+                      },
+                      {
+                        "Or": [
+                          {
+                            "Not": {
+                              "Variable": "$.forceError",
+                              "IsPresent": true
+                            }
+                          },
+                          {
+                            "Variable": "$.forceError",
+                            "BooleanEquals": false
+                          }
+                        ]
+                      }
+                    ],
+                    "Next": "SDK Invoke",
+                    "Comment": "Type SDK, No Error"
+                  },
+                  {
+                    "And": [
+                      {
+                        "Variable": "$.type",
+                        "IsPresent": true
+                      },
+                      {
+                        "Variable": "$.type",
+                        "StringMatches": "oi"
+                      },
+                      {
+                        "Or": [
+                          {
+                            "Not": {
+                              "Variable": "$.forceError",
+                              "IsPresent": true
+                            }
+                          },
+                          {
+                            "Variable": "$.forceError",
+                            "BooleanEquals": false
+                          }
+                        ]
+                      }
+                    ],
+                    "Next": "Optimized Integration Invoke",
+                    "Comment": "Type is OI, No Error"
+                  },
+                  {
+                    "And": [
+                      {
+                        "Variable": "$.type",
+                        "IsPresent": true
+                      },
+                      {
+                        "Variable": "$.type",
+                        "StringMatches": "oi"
+                      },
+                      {
+                        "Variable": "$.forceError",
+                        "IsPresent": true
+                      },
+                      {
+                        "Variable": "$.forceError",
+                        "BooleanEquals": true
+                      }
+                    ],
+                    "Next": "Optimized Integration Invoke  - Bad Hello",
+                    "Comment": "Type is OI, Force Error"
+                  },
+                  {
+                    "And": [
+                      {
+                        "Not": {
+                          "Variable": "$.type",
+                          "IsPresent": true
+                        }
+                      },
+                      {
+                        "Variable": "$.forceError",
+                        "IsPresent": true
+                      },
+                      {
+                        "Variable": "$.forceError",
+                        "BooleanEquals": true
+                      }
+                    ],
+                    "Comment": "No Type, Force Error",
+                    "Next": "Optimized Integration Invoke  - Bad Hello"
+                  },
+                  {
+                    "And": [
+                      {
+                        "Variable": "$.type",
+                        "IsPresent": true
+                      },
+                      {
+                        "Variable": "$.type",
+                        "StringMatches": "sdk"
+                      },
+                      {
+                        "Variable": "$.forceError",
+                        "IsPresent": true
+                      },
+                      {
+                        "Variable": "$.forceError",
+                        "BooleanEquals": true
+                      }
+                    ],
+                    "Comment": "Type SDK, Force Error",
+                    "Next": "SDK Invoke - Bad Hello"
+                  }
+            ],
+            "Default": "Optimized Integration Invoke"
+        },
+        "SDK Invoke": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::aws-sdk:lambda:invoke",
+            "Parameters": {
+                "FunctionName": "${HelloLambdaName}",
+                "Payload": {"message": "hello"}
+            },
+            "OutputPath": "$.Payload",
+            "End" : true
+        },
+        "Optimized Integration Invoke": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Parameters": {
+                "FunctionName": "${HelloLambdaName}",
+                "Payload": {"message": "hello"}
+            },
+            "OutputPath": "$.Payload",
+            "End": true
+        },
+        "Optimized Integration Invoke  - Bad Hello":
+        {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Parameters": {
+                "FunctionName": "${BadHelloLambdaName}",
+                "Payload": {}
+            },
+            "End": true
+        },
+        "SDK Invoke - Bad Hello":
+        {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::aws-sdk:lambda:invoke",
+            "Parameters": {
+                "FunctionName": "${BadHelloLambdaName}",
+                "Payload": {}
+            },
+            "End": true
+        }
+    }
+
+}
