@@ -19,6 +19,6 @@ Simple workflow facilitating the showcase of differences between using Optimized
         - deploys an AWS Step Functions workflow and an AWS Lambda function
 
 - ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) **Instructions**
-    - navigate to the cloned folder
+    - navigate to lambda/optimized_vs_sdk folder
     - run: ```sam build```
     - run: ```sam deploy```
