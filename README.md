@@ -1,4 +1,4 @@
-# AWS Step Functions Demo - Comparison between invoking an AWS Lambda function via Optimized and AWS SDK integration.
+# AWS Step Functions AWS SDK Integrations Demos
 
 Simple workflow facilitating the showcase of differences between using Optimized and AWS SDK integrations to invoke an AWS Lambda function.
 ## Notes
@@ -7,7 +7,10 @@ Simple workflow facilitating the showcase of differences between using Optimized
 
 - **All stacks will deploy by defaul to the eu-west-1 (Ireland) region.** You can easily change that in the samconfig.toml file included or use ```sam deploy --guided``` to override it.
 
-### Usage Guide
+## **Demos**
+
+### **Lambda Optimized Integration vs AWS SDK Integration**
+#### Usage Guide
 - ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+)  **Build requirements**
     - AWS SAM CLI installed (instructions: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 
